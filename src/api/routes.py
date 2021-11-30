@@ -16,3 +16,7 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+
+@api.route('/register', methods=["POST"])
+def register_user
