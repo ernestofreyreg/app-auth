@@ -20,7 +20,7 @@ def handle_hello():
     user = User.query.filter(User.id == current_user_id).first()
 
     response_body = {
-        "message": f"Hello I Am {user.email}"
+        "message": f"Hello I Am {user.email}"        
     }
     return jsonify(response_body), 200
 
