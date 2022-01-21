@@ -8,14 +8,16 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from api.utils import APIException, generate_sitemap
 from api.models import db
-from api.routes import api
+from api.routes import api, UPLOAD_FOLDER
 from api.admin import setup_admin
 from flask_jwt_extended import JWTManager
 #from models import Person
 
+
 ENV = os.getenv("FLASK_ENV")
-static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
+static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../uploads/')
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.url_map.strict_slashes = False
 
 # database condiguration

@@ -1,15 +1,54 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
+import os
+from flask import Flask, request, jsonify, url_for, Blueprint, redirect
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from argon2 import PasswordHasher
+from werkzeug.utils import secure_filename
+import hashlib
+
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = './uploads'
 
 ph = PasswordHasher()
 
 api = Blueprint('api', __name__)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@api.route('/see', methods=['GET'])
+def see():
+    return "See", 200
+
+
+
+
+@api.route('/upload', methods=['POST'])
+def upload_file():
+    # check if the post request has the file part
+    if 'image' not in request.files:
+        return 'no-image', 400
+        
+    image = request.files['image']
+
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if image.filename == '':
+        return 'no-filename', 400
+
+    if image and allowed_file(image.filename):
+        filename = image.filename
+        image.save(os.path.join(UPLOAD_FOLDER, filename))
+
+        # TODO: Move the image to your storage
+        # TODO: Clean the temp file
+
+        return filename, 200
 
 
 @api.route('/hello', methods=['POST', 'GET'])
